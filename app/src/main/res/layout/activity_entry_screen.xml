@@ -42,6 +42,13 @@
             android:id="@+id/openMapButton" android:layout_marginTop="16dp"
             app:layout_constraintTop_toBottomOf="@+id/geoDužina" app:layout_constraintStart_toStartOf="parent"
             android:onClick="openMapView"/>
+    <TextView
+            android:text="GitHub Testiranje"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/test" app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/openMapButton" android:layout_marginTop="24dp"
+            android:layout_marginStart="24dp"/>
 
 
 </android.support.constraint.ConstraintLayout>
