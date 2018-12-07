@@ -23,6 +23,7 @@ import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
+import com.example.vladimir.geonodes.R.id.visible
 import kotlinx.android.synthetic.main.activity_entry_screen.*
 
 class EntryScreen : AppCompatActivity() {
@@ -61,6 +62,7 @@ class EntryScreen : AppCompatActivity() {
     {
         locationButton.isEnabled = false
         locationButton.alpha = 0.5F
+
     }
     fun enableView()
     {
@@ -106,7 +108,7 @@ class EntryScreen : AppCompatActivity() {
         hasGPS = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
         hasNetwork = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)
 
-        if (hasGPS || hasNetwork) {
+        if (hasGPS) {
             locationButton.isEnabled=false
             locationButton.alpha=0.5F
 
@@ -196,5 +198,7 @@ class EntryScreen : AppCompatActivity() {
             startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))
         }
     }
+
+    //Retrofit retrofit = new Retrofit().baseUrl(https/...)
 }
 
