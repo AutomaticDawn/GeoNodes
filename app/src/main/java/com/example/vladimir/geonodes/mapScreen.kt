@@ -47,10 +47,9 @@ class mapScreen : AppCompatActivity(), OnMapReadyCallback {
      */
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
-
-        // Add a marker in Sydney and move the camera
         val currentLocation = LatLng(gpsLatitude,gpsLongitude)
         mMap.addMarker(MarkerOptions().position(currentLocation).title("Your Location"))
         mMap.moveCamera(CameraUpdateFactory.newLatLng(currentLocation))
+        mMap.animateCamera( CameraUpdateFactory.zoomTo( 16.0f ) );
     }
 }
