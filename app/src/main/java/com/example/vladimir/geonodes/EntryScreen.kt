@@ -122,7 +122,7 @@ class EntryScreen : AppCompatActivity() {
                             if (location != null) {
                                 locationGps = location
                                 geoSirina.text = "Širina: " + locationGps!!.latitude
-                                geoDužina.text = "Dužina: " + locationGps!!.longitude
+                                geoDuzina.text = "Dužina: " + locationGps!!.longitude
                                 Log.d("CodeAndroidLocation", "GPS Latitude : " + locationGps!!.latitude)
                                 Log.d("CodeAndroidLocation", "GPS Longitude : " + locationGps!!.longitude)
                                 openMapButton.isEnabled=true
