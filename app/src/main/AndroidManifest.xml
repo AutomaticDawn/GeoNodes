@@ -38,6 +38,8 @@
         </activity>
         <activity android:name=".locationInfoScreen">
         </activity>
+        <activity android:name=".LocationInfoScreen">
+        </activity>
     </application>
 
 </manifest>
