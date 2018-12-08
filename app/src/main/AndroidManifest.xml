@@ -36,7 +36,8 @@
                 android:name=".mapScreen"
                 android:label="@string/title_activity_map_screen">
         </activity>
-
+        <activity android:name=".locationInfoScreen">
+        </activity>
     </application>
 
 </manifest>

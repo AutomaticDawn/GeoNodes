@@ -31,9 +31,9 @@ class mapScreen : AppCompatActivity(), OnMapReadyCallback {
         mapFragment.getMapAsync(this)
         gpsLatitude= getIntent().getDoubleExtra(GPS_LATITUDE, 0.0)
         gpsLongitude= getIntent().getDoubleExtra(GPS_LONGITUDE, 0.0)
-        Log.d("CodeAndroidLocation", "We r in")
-        Log.d("CodeAndroidLocation", "GPS Latitude : " + gpsLatitude)
-        Log.d("CodeAndroidLocation", "GPS Longitude : " + gpsLongitude)
+        Log.d("CodeAndroidLocation", "Opened Map View")
+        Log.d("CodeAndroidLocation", "-Map Latitude : " + gpsLatitude)
+        Log.d("CodeAndroidLocation", "-Map Longitude : " + gpsLongitude)
     }
 
     /**

@@ -37,7 +37,8 @@ class EntryScreen : AppCompatActivity() {
     private var hasGPS = false
     private var hasNetwork = false
     private var locationGps: Location? = null
-    //private var locationNetwork: Location? = null
+    private var locationNetwork: Location? = null
+    private var locationMain: Location? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -77,11 +78,11 @@ class EntryScreen : AppCompatActivity() {
     fun openMapView(view: View) // Funkcija koja otvara mapu
     {
         var mapIntent = Intent(this, mapScreen::class.java)
-        mapIntent.putExtra(GPS_LATITUDE,locationGps!!.latitude)
-        mapIntent.putExtra(GPS_LONGITUDE,locationGps!!.longitude)
-        Log.d("CodeAndroidLocation", "Prosledjene koordinate:")
-        Log.d("CodeAndroidLocation", "GPS Latitude : " + locationGps!!.latitude)
-        Log.d("CodeAndroidLocation", "GPS Longitude : " + locationGps!!.longitude)
+        mapIntent.putExtra(GPS_LATITUDE,locationMain!!.latitude)
+        mapIntent.putExtra(GPS_LONGITUDE,locationMain!!.longitude)
+        /*Log.d("CodeAndroidLocation", "Sent Coordinates:")
+        Log.d("CodeAndroidLocation", "-GPS Latitude : " + locationMain!!.latitude)
+        Log.d("CodeAndroidLocation", "-GPS Longitude : " + locationMain!!.longitude)*/
         startActivity(mapIntent)
     }
 
@@ -108,25 +109,26 @@ class EntryScreen : AppCompatActivity() {
         hasGPS = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
         hasNetwork = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)
 
-        if (hasGPS) {
+        if (hasGPS || hasNetwork) {
             locationButton.isEnabled=false
             locationButton.alpha=0.5F
 
             if (hasGPS) //GPS -------------------------------------------------------------
             {
-                Log.d("CodeAndroidLocation", "hasGps")
-                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 3000, 0f, object : LocationListener
-                    {
+                Log.d("CodeAndroidLocation", "GPS available")
+                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 0f, object : LocationListener {
                         override fun onLocationChanged(location: Location?) {
-                            Log.d("CodeAndroidLocation", "Kordinate:")
                             if (location != null) {
                                 locationGps = location
-                                geoSirina.text = "Širina: " + locationGps!!.latitude
+                                locationMain = locationGps
+                                Log.d("CodeAndroidLocation", "Updated GPS Coordinates")
+                                writeCoordinates()
+                                /*geoSirina.text = "Širina: " + locationGps!!.latitude
                                 geoDuzina.text = "Dužina: " + locationGps!!.longitude
                                 Log.d("CodeAndroidLocation", "GPS Latitude : " + locationGps!!.latitude)
                                 Log.d("CodeAndroidLocation", "GPS Longitude : " + locationGps!!.longitude)
                                 openMapButton.isEnabled=true
-                                openMapButton.alpha=1F
+                                openMapButton.alpha=1F*/
                             }
                         }
 
@@ -148,17 +150,20 @@ class EntryScreen : AppCompatActivity() {
                 }
             } //-------------------------------------------------------------
 
-            /*if (hasNetwork) //Network -------------------------------------------------------
+            if (hasNetwork) //Network -------------------------------------------------------
             {
+                Log.d("CodeAndroidLocation", "Network available")
                 locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 5000, 0F, object : LocationListener {
-
-                        override fun onLocationChanged(location: Location?) {
+                    override fun onLocationChanged(location: Location?) {
                             if (location != null) {
                                 locationNetwork = location
-                                geoSirina.text = "Širina: " + locationNetwork!!.latitude
-                                geoDužina.text = "Dužina: " + locationNetwork!!.longitude
-                                Log.d("CodeAndroidLocation", " GPS Latitude : " + locationGps!!.latitude)
-                                Log.d("CodeAndroidLocation", " GPS Longitude : " + locationGps!!.longitude)
+                                Log.d("CodeAndroidLocation", "Updated Network Coordinates")
+                                /*geoSirina.text = "Širina: " + locationNetwork!!.latitude
+                                geoDuzina.text = "Dužina: " + locationNetwork!!.longitude
+                                Log.d("CodeAndroidLocation", "Network Latitude : " + locationNetwork!!.latitude)
+                                Log.d("CodeAndroidLocation", "Network Longitude : " + locationNetwork!!.longitude)
+                                openMapButton.isEnabled=true
+                                openMapButton.alpha=1F*/
                             }
                         }
 
@@ -178,27 +183,47 @@ class EntryScreen : AppCompatActivity() {
                 if (localNetworkLocation != null) {
                     locationNetwork = localNetworkLocation
                 }//-------------------------------------------------------------
-            }*/
+            }
 
-            /*if (locationGps != null && locationNetwork != null) { // Ispisivanje lokacije na ekran
-                if (locationGps!!.accuracy >= locationNetwork!!.accuracy) {
-                    geoSirina.text = "Širina: " + locationGps!!.latitude
-                    geoDužina.text = "Dužina: " + locationGps!!.longitude
-                    Log.d("CodeAndroidLocation", " GPS Latitude : " + locationGps!!.latitude)
-                    Log.d("CodeAndroidLocation", " GPS Longitude : " + locationGps!!.longitude)
-                } else {
-                    geoSirina.text = "Širina: " + locationNetwork!!.latitude
-                    geoDužina.text = "Dužina: " + locationNetwork!!.longitude
-                    Log.d("CodeAndroidLocation", " GPS Latitude : " + locationNetwork!!.latitude)
-                    Log.d("CodeAndroidLocation", " GPS Longitude : " + locationNetwork!!.longitude)
+            if (locationGps != null || locationNetwork != null) // Ispisivanje lokacije na ekran
+            {
+                /*if (locationGps!!.accuracy >= locationNetwork!!.accuracy || locationNetwork == null)
+                {
+                    locationMain = locationGps
+                    Log.d("CodeAndroidLocation", "Main location is now GPS location")
                 }
-            }*/
+                else
+                {
+                    locationMain = locationNetwork
+                    Log.d("CodeAndroidLocation", "Main location is now Network location")
+                }*/
+                if (locationGps == null && locationNetwork != null)
+                {
+                    locationMain = locationNetwork
+                    Log.d("CodeAndroidLocation", "Main location is now Network location")
+                }
+                else
+                {
+                    locationMain = locationGps
+                    Log.d("CodeAndroidLocation", "Main location is now GPS location")
+                }
+                writeCoordinates()
+                Log.d("CodeAndroidLocation", "Main Latitude : " + locationMain!!.latitude)
+                Log.d("CodeAndroidLocation", "Main Longitude : " + locationMain!!.longitude)
+                openMapButton.isEnabled=true
+                openMapButton.alpha=1F
+            }
         }
         else {
             startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))
         }
     }
 
-    //Retrofit retrofit = new Retrofit().baseUrl(https/...)
+    fun writeCoordinates()
+    {
+        geoSirina.text = "Širina: " + locationMain!!.latitude
+        geoDuzina.text = "Dužina: " + locationMain!!.longitude
+    }
+
 }
 
