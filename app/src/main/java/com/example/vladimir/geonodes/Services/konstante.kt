@@ -1,4 +1,4 @@
-package com.example.vladimir.geonodes
+package com.example.vladimir.geonodes.Services
 
 const val REQUEST_LOCATION = 1 // Obavezno promeniti i dodati ovo u konstante !!!
 const val CHANNEL_ID = "1" // Obavezno promeniti i dodati ovo u konstante !!!

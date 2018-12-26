@@ -13,7 +13,7 @@
             android:roundIcon="@mipmap/ic_launcher_round"
             android:supportsRtl="true"
             android:theme="@style/AppTheme">
-        <activity android:name=".EntryScreen">
+        <activity android:name=".Visual.EntryScreen">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
@@ -33,12 +33,12 @@
                 android:value="@string/google_maps_key"/>
 
         <activity
-                android:name=".mapScreen"
+                android:name=".Visual.mapScreen"
                 android:label="@string/title_activity_map_screen">
         </activity>
         <activity android:name=".locationInfoScreen">
         </activity>
-        <activity android:name=".LocationInfoScreen">
+        <activity android:name=".Visual.LocationInfoScreen">
         </activity>
     </application>
 

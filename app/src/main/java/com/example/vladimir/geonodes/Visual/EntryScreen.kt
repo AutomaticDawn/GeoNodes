@@ -1,4 +1,4 @@
-package com.example.vladimir.geonodes
+package com.example.vladimir.geonodes.Visual
 
 import android.Manifest
 import android.annotation.SuppressLint
@@ -15,15 +15,11 @@ import android.provider.Settings
 import android.support.v4.app.ActivityCompat
 import android.support.v4.app.NotificationCompat
 import android.support.v4.app.NotificationManagerCompat
-import android.support.v4.view.GravityCompat
-import android.support.v7.app.ActionBar
 import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.Toolbar
 import android.util.Log
-import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
-import com.example.vladimir.geonodes.R.id.visible
+import com.example.vladimir.geonodes.R
 import kotlinx.android.synthetic.main.activity_entry_screen.*
 
 class EntryScreen : AppCompatActivity() {

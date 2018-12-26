@@ -1,7 +1,8 @@
-package com.example.vladimir.geonodes
+package com.example.vladimir.geonodes.Visual
 
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import com.example.vladimir.geonodes.R
 import kotlinx.android.synthetic.main.activity_location_info_screen.*
 
 class LocationInfoScreen : AppCompatActivity() {

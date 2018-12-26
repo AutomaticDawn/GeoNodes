@@ -1,7 +1,5 @@
-package com.example.vladimir.geonodes
+package com.example.vladimir.geonodes.Visual
 
-import android.content.Intent
-import android.location.Location
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -12,8 +10,9 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
-import com.example.vladimir.geonodes.GPS_LATITUDE
-import com.example.vladimir.geonodes.GPS_LONGITUDE
+import com.example.vladimir.geonodes.Services.GPS_LATITUDE
+import com.example.vladimir.geonodes.Services.GPS_LONGITUDE
+import com.example.vladimir.geonodes.R
 
 class mapScreen : AppCompatActivity(), OnMapReadyCallback {
 
