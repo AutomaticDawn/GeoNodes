@@ -19,8 +19,14 @@ import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.View
 import android.widget.Toast
+import com.android.volley.Request
 import com.example.vladimir.geonodes.R
 import kotlinx.android.synthetic.main.activity_entry_screen.*
+import com.android.volley.RequestQueue
+import com.android.volley.Response
+import com.android.volley.toolbox.JsonObjectRequest
+import com.android.volley.toolbox.Volley
+import com.example.vladimir.geonodes.Utilities.locResponse
 
 class EntryScreen : AppCompatActivity() {
 
@@ -28,6 +34,7 @@ class EntryScreen : AppCompatActivity() {
     var CHANNEL_ID = "1" // Obavezno promeniti i dodati ovo u konstante !!!
     val GPS_LATITUDE = "latitude" // Obavezno promeniti i dodati ovo u konstante !!!
     val GPS_LONGITUDE = "longitude" // Obavezno promeniti i dodati ovo u konstante !!!
+    val URL_REGISTER = "https://geonodesapi.herokuapp.com/api/Todo/"
 
     lateinit var locationManager: LocationManager
     private var hasGPS = false
@@ -221,5 +228,30 @@ class EntryScreen : AppCompatActivity() {
         geoDuzina.text = "Dužina: " + locationMain!!.longitude
     }
 
+    fun serverRequest(view: View)
+    {
+        /*ReadLocation.SendLocation(locationMain!!.latitude,locationMain!!.longitude) { complete ->
+            Log.d("JSON_Server", "Uspeli smo")
+        }*/
+        Log.d("JSON_Server", "Tried")
+        val requestQueue: RequestQueue = Volley.newRequestQueue(this)
+        val objRequest: JsonObjectRequest = JsonObjectRequest(
+            Request.Method.GET,
+            "http://89.216.137.159:3000/locations",
+            null,
+            Response.Listener { response ->
+                    Log.d("JSON_Server", "Connected")
+                    Log.d("JSON_Server", response.toString())
+                    val locList = locResponse(response.toString());
+                    testiranje.text = response.toString();
+            },
+            Response.ErrorListener {
+                    Log.d("JSON_Server", "Not Connected")
+                    //Log.d("JSON_Server", error.toString())
+            }
+        )
+
+        requestQueue.add(objRequest)
+    }
 }
 
