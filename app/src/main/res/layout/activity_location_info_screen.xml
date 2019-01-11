@@ -8,10 +8,10 @@
         tools:context=".Visual.LocationInfoScreen">
 
     <TextView
-            android:text="naslov"
+            android:text="name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/locationTitle"
+            android:id="@+id/locationNameValue"
             android:textSize="30sp"
             android:textColor="@color/common_google_signin_btn_text_dark_focused" android:textStyle="bold|italic"
             android:textAllCaps="false"
@@ -23,9 +23,17 @@
     <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/description"
+            android:id="@+id/latitudeValue"
             app:layout_constraintStart_toStartOf="parent"
             android:layout_marginStart="24dp" app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginEnd="24dp" android:text="tekst" android:layout_marginTop="32dp"
-            app:layout_constraintTop_toBottomOf="@+id/locationTitle"/>
+            android:layout_marginEnd="24dp" android:text="latitude:" android:layout_marginTop="32dp"
+            app:layout_constraintTop_toBottomOf="@+id/locationNameValue"/>
+    <TextView
+            android:text="longitude:"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/longitudeValue" android:layout_marginTop="32dp"
+            app:layout_constraintTop_toBottomOf="@+id/latitudeValue" app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginEnd="163dp" app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginStart="163dp"/>
 </android.support.constraint.ConstraintLayout>

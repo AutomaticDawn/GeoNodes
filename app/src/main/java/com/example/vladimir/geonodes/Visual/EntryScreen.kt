@@ -26,6 +26,7 @@ import com.android.volley.RequestQueue
 import com.android.volley.Response
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
+import com.example.vladimir.geonodes.Utilities.locData
 import com.example.vladimir.geonodes.Utilities.locResponse
 
 class EntryScreen : AppCompatActivity() {
@@ -43,6 +44,11 @@ class EntryScreen : AppCompatActivity() {
     private var locationNetwork: Location? = null
     private var locationMain: Location? = null
 
+    var locTemp: locResponse? = null
+
+    public var locList: String? = null
+    var HasDatabase: Boolean = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_entry_screen)
@@ -59,7 +65,6 @@ class EntryScreen : AppCompatActivity() {
             enableView()
         }
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_NOSENSOR) // Zabranjuje okretanje ekrana
-
     }
 
     fun disableView() //Vidljivost Dugme
@@ -74,6 +79,8 @@ class EntryScreen : AppCompatActivity() {
         locationButton.alpha = 1F
         openMapButton.isEnabled = false
         openMapButton.alpha = 0.5F
+        locTest.isEnabled=false
+        locTest.alpha=0.5F
         locationButton.setOnClickListener { location()}
         Toast.makeText(this, "Imamo Permission", Toast.LENGTH_SHORT).show()
     }
@@ -83,9 +90,6 @@ class EntryScreen : AppCompatActivity() {
         var mapIntent = Intent(this, mapScreen::class.java)
         mapIntent.putExtra(GPS_LATITUDE,locationMain!!.latitude)
         mapIntent.putExtra(GPS_LONGITUDE,locationMain!!.longitude)
-        /*Log.d("CodeAndroidLocation", "Sent Coordinates:")
-        Log.d("CodeAndroidLocation", "-GPS Latitude : " + locationMain!!.latitude)
-        Log.d("CodeAndroidLocation", "-GPS Longitude : " + locationMain!!.longitude)*/
         startActivity(mapIntent)
     }
 
@@ -124,14 +128,8 @@ class EntryScreen : AppCompatActivity() {
                             if (location != null) {
                                 locationGps = location
                                 locationMain = locationGps
-                                Log.d("CodeAndroidLocation", "Updated GPS Coordinates")
+                                Log.d("CodeAndroidLocation", "Updated GPS Coordinates") //Default koordinate su GPS koordinate
                                 writeCoordinates()
-                                /*geoSirina.text = "Širina: " + locationGps!!.latitude
-                                geoDuzina.text = "Dužina: " + locationGps!!.longitude
-                                Log.d("CodeAndroidLocation", "GPS Latitude : " + locationGps!!.latitude)
-                                Log.d("CodeAndroidLocation", "GPS Longitude : " + locationGps!!.longitude)
-                                openMapButton.isEnabled=true
-                                openMapButton.alpha=1F*/
                             }
                         }
 
@@ -161,12 +159,6 @@ class EntryScreen : AppCompatActivity() {
                             if (location != null) {
                                 locationNetwork = location
                                 Log.d("CodeAndroidLocation", "Updated Network Coordinates")
-                                /*geoSirina.text = "Širina: " + locationNetwork!!.latitude
-                                geoDuzina.text = "Dužina: " + locationNetwork!!.longitude
-                                Log.d("CodeAndroidLocation", "Network Latitude : " + locationNetwork!!.latitude)
-                                Log.d("CodeAndroidLocation", "Network Longitude : " + locationNetwork!!.longitude)
-                                openMapButton.isEnabled=true
-                                openMapButton.alpha=1F*/
                             }
                         }
 
@@ -190,16 +182,6 @@ class EntryScreen : AppCompatActivity() {
 
             if (locationGps != null || locationNetwork != null) // Ispisivanje lokacije na ekran
             {
-                /*if (locationGps!!.accuracy >= locationNetwork!!.accuracy || locationNetwork == null)
-                {
-                    locationMain = locationGps
-                    Log.d("CodeAndroidLocation", "Main location is now GPS location")
-                }
-                else
-                {
-                    locationMain = locationNetwork
-                    Log.d("CodeAndroidLocation", "Main location is now Network location")
-                }*/
                 if (locationGps == null && locationNetwork != null)
                 {
                     locationMain = locationNetwork
@@ -213,8 +195,7 @@ class EntryScreen : AppCompatActivity() {
                 writeCoordinates()
                 Log.d("CodeAndroidLocation", "Main Latitude : " + locationMain!!.latitude)
                 Log.d("CodeAndroidLocation", "Main Longitude : " + locationMain!!.longitude)
-                openMapButton.isEnabled=true
-                openMapButton.alpha=1F
+
             }
         }
         else {
@@ -226,13 +207,16 @@ class EntryScreen : AppCompatActivity() {
     {
         geoSirina.text = "Širina: " + locationMain!!.latitude
         geoDuzina.text = "Dužina: " + locationMain!!.longitude
+
+        Log.d("CodeAndroidLocation", "Written Latitude : " + locationMain!!.latitude)
+        Log.d("CodeAndroidLocation", "Written Longitude : " + locationMain!!.longitude)
+
+        openMapButton.isEnabled=true
+        openMapButton.alpha=1F
     }
 
     fun serverRequest(view: View)
     {
-        /*ReadLocation.SendLocation(locationMain!!.latitude,locationMain!!.longitude) { complete ->
-            Log.d("JSON_Server", "Uspeli smo")
-        }*/
         Log.d("JSON_Server", "Tried")
         val requestQueue: RequestQueue = Volley.newRequestQueue(this)
         val objRequest: JsonObjectRequest = JsonObjectRequest(
@@ -242,16 +226,39 @@ class EntryScreen : AppCompatActivity() {
             Response.Listener { response ->
                     Log.d("JSON_Server", "Connected")
                     Log.d("JSON_Server", response.toString())
-                    val locList = locResponse(response.toString());
-                    testiranje.text = response.toString();
+                    testView.text = "Status: 200 Ok"
+                    locList = response.toString()
+                    HasDatabase = true
+                    locTest.isEnabled=true
+                    locTest.alpha=1F
+                    locTemp = locResponse(response.toString())
             },
             Response.ErrorListener {
                     Log.d("JSON_Server", "Not Connected")
+                    testView.text = "Status: 404 Not Found"
                     //Log.d("JSON_Server", error.toString())
             }
         )
-
         requestQueue.add(objRequest)
+    }
+
+    fun locTest(view: View)
+    {
+        if(HasDatabase)
+        {
+            var locId = locationId.text.toString()
+            var id = locId.toInt()
+            if(locationId.text != null && id >=0 && id < locTemp!!.count && locationId.text != null) {
+                Log.d("JSON_Server", "LocationInfoScreen Prep")
+                var locationIntent = Intent(this, LocationInfoScreen::class.java)
+                locationIntent.putExtra("locList", locList)
+                locationIntent.putExtra("id", id)
+                startActivity(locationIntent)
+            }
+            else{
+                Toast.makeText(this, "Nevažeći id", Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 }
 
