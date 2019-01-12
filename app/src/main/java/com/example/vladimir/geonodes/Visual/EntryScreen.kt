@@ -2,6 +2,7 @@ package com.example.vladimir.geonodes.Visual
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.app.IntentService
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
@@ -75,12 +76,16 @@ class EntryScreen : AppCompatActivity() {
     }
     fun enableView()
     {
-        locationButton.isEnabled = true
-        locationButton.alpha = 1F
+        locationButton.isEnabled = false
+        locationButton.alpha = 0.5F
         openMapButton.isEnabled = false
         openMapButton.alpha = 0.5F
         locTest.isEnabled=false
         locTest.alpha=0.5F
+        getDatabase.isEnabled=false
+        getDatabase.alpha=0.5F
+        locationId.isEnabled=false
+        locationId.alpha=0.5F
         locationButton.setOnClickListener { location()}
         Toast.makeText(this, "Imamo Permission", Toast.LENGTH_SHORT).show()
     }
@@ -260,6 +265,15 @@ class EntryScreen : AppCompatActivity() {
                 Toast.makeText(this, "Nevažeći id", Toast.LENGTH_SHORT).show()
             }
         }
+    }
+
+    fun startThread(view: View)
+    {
+        val ran = true
+        val bck_intent = Intent(this, MyIntentService::class.java)
+        Log.d("Bck_Service","Starting Background Service")
+       // bck_intent.putExtra("bckService",ran)
+        startService(bck_intent)
     }
 }
 
