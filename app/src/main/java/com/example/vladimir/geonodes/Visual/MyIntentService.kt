@@ -26,6 +26,8 @@ import com.example.vladimir.geonodes.Utilities.locResponse
 import kotlinx.android.synthetic.main.activity_entry_screen.*
 import java.lang.Math.abs
 import kotlin.math.sqrt
+import java.util.*
+
 
 class MyIntentService : IntentService("MyIntentService") {
 
@@ -212,7 +214,10 @@ class MyIntentService : IntentService("MyIntentService") {
         val notIntent = Intent(this, LocationInfoScreen::class.java) // Pravljenje intent-a za notifikaciju
         notIntent.putExtra("locList", locList.toString())
         notIntent.putExtra("id", id)
+
         val pendingIntent: PendingIntent = PendingIntent.getActivity(this, 1, notIntent, 0)
+
+        val NOTIFICATION_GROUP = "com.android.example.GeoNodes"
 
         var notifikacija = NotificationCompat.Builder(this, "1") //Deklaracija notifikacije
             .setSmallIcon(R.drawable.notification_icon)
@@ -220,10 +225,11 @@ class MyIntentService : IntentService("MyIntentService") {
             .setContentText(locList!!.locations!![id].name)
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
             .setContentIntent(pendingIntent)
+            .setGroup(NOTIFICATION_GROUP)
             .setAutoCancel(true)
 
         with(NotificationManagerCompat.from(this)) {
-            notify(1, notifikacija.build())
+            notify(id, notifikacija.build())
         }
     }
 }
