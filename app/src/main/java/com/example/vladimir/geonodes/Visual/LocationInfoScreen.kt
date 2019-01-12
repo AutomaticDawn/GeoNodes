@@ -21,13 +21,13 @@ class LocationInfoScreen : AppCompatActivity() {
     var id: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        Log.d("JSON_Server", "LocationInfoScreen On Create")
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_location_info_screen)
         val temp = getIntent().getStringExtra("locList")
         id = getIntent().getIntExtra("id", 0)
         locList= locResponse(temp)
         loadLocation()
+        Log.d("Bck_Service","LocationInfoScreen Launched")
     }
 
     fun loadLocation()
@@ -40,20 +40,18 @@ class LocationInfoScreen : AppCompatActivity() {
 
     fun redirectClick(view: View)
     {
-        Log.d("JSON_Server", "Opening: " + locList!!.locations!![id].name)
+        Log.d("Bck_Service", "Opening: " + locList!!.locations!![id].name + " on the Internet")
         val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(locList!!.locations!![id].url))
         startActivity(browserIntent)
     }
 
     fun mapOpener(view: View) // Funkcija koja otvara mapu
     {
-        Log.d("JSON_Server", "Opening map")
+        Log.d("Bck_Service", "Opening map")
         var mapIntent = Intent(this, mapScreen::class.java)
-        Log.d("JSON_Server", "Created Intent")
         mapIntent.putExtra("latitude",locList!!.locations!![id].latitude)
         mapIntent.putExtra("longitude",locList!!.locations!![id].longitude)
         mapIntent.putExtra("title",locList!!.locations!![id].name)
-        Log.d("JSON_Server", "Put Extras")
         startActivity(mapIntent)
     }
 }

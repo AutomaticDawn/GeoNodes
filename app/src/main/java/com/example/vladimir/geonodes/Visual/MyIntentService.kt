@@ -2,6 +2,7 @@ package com.example.vladimir.geonodes.Visual
 
 import android.annotation.SuppressLint
 import android.app.IntentService
+import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.content.Intent.getIntent
@@ -10,6 +11,8 @@ import android.location.LocationListener
 import android.location.LocationManager
 import android.os.Bundle
 import android.provider.Settings
+import android.support.v4.app.NotificationCompat
+import android.support.v4.app.NotificationManagerCompat
 import android.util.Log
 import android.view.View
 import android.widget.Toast
@@ -18,8 +21,11 @@ import com.android.volley.RequestQueue
 import com.android.volley.Response
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
+import com.example.vladimir.geonodes.R
 import com.example.vladimir.geonodes.Utilities.locResponse
 import kotlinx.android.synthetic.main.activity_entry_screen.*
+import java.lang.Math.abs
+import kotlin.math.sqrt
 
 class MyIntentService : IntentService("MyIntentService") {
 
@@ -27,6 +33,7 @@ class MyIntentService : IntentService("MyIntentService") {
     var runBck: Boolean = true
     var HasDatabase = false
     var locList: locResponse? = null
+    var diff: Double = 0.001 // Razlika
 
     lateinit var locationManager: LocationManager
     private var hasGPS = false
@@ -50,10 +57,9 @@ class MyIntentService : IntentService("MyIntentService") {
             while (runBck) {
                 time++
                 Log.d("Bck_Service", "Background Service running for: " + time + "s")
-                compare()
+                if(time%5 == 0) compare()
                 Thread.sleep(1000)
-                if (time >= 60){
-                    match(0)
+                if (time >= 3600){
                     break
                 }
             }
@@ -81,13 +87,13 @@ class MyIntentService : IntentService("MyIntentService") {
         requestQueue.add(objRequest)
     }
 
-    fun match(id: Int)
+    /*fun match(id: Int)
     {
         var locationIntent = Intent(this, LocationInfoScreen::class.java)
         locationIntent.putExtra("locList", locList.toString())
         locationIntent.putExtra("id", id)
         startActivity(locationIntent)
-    }
+    }*/
 
     @SuppressLint("MissingPermission")
     fun location() {
@@ -183,10 +189,41 @@ class MyIntentService : IntentService("MyIntentService") {
 
     fun compare()
     {
+        var tempLatDiff: Double? = 0.0
+        var tempLongDiff: Double? = 0.0
+        var currDiff: Double? = 0.0
         Log.d("Bck_Service", "Background Service is comparing with database")
-        for(i in 0..locList!!.count)
+        for(i in 0..locList!!.count-1)
         {
-            Log.d("Bck_Service","Loop: " + i)
+            //Log.d("Bck_Service","Loop: " + i)
+            tempLatDiff = locList!!.locations!![i].latitude!! - locationMain!!.latitude!!
+            tempLongDiff = locList!!.locations!![i].longitude!! - locationMain!!.longitude!!
+            currDiff = sqrt((tempLatDiff*tempLatDiff)+(tempLongDiff*tempLongDiff))
+            //Log.d("Bck_Service","Difference " + i + ": " + currDiff)
+            if(currDiff<diff)
+            {
+                Log.d("Bck_Service","Sending Notification with id: " + i)
+                notifyUser(i)
+            }
+        }
+    }
+
+    fun notifyUser(id: Int) {
+        val notIntent = Intent(this, LocationInfoScreen::class.java) // Pravljenje intent-a za notifikaciju
+        notIntent.putExtra("locList", locList.toString())
+        notIntent.putExtra("id", id)
+        val pendingIntent: PendingIntent = PendingIntent.getActivity(this, 1, notIntent, 0)
+
+        var notifikacija = NotificationCompat.Builder(this, "1") //Deklaracija notifikacije
+            .setSmallIcon(R.drawable.notification_icon)
+            .setContentTitle("You Are Near An Important Location")
+            .setContentText(locList!!.locations!![id].name)
+            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+            .setContentIntent(pendingIntent)
+            .setAutoCancel(true)
+
+        with(NotificationManagerCompat.from(this)) {
+            notify(1, notifikacija.build())
         }
     }
 }
