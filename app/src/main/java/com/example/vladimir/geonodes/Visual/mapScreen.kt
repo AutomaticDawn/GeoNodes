@@ -20,6 +20,7 @@ class mapScreen : AppCompatActivity(), OnMapReadyCallback {
 
     private var gpsLatitude: Double = 0.0
     private var gpsLongitude: Double = 0.0
+    private var locationTitle: String = "Your Location"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,6 +31,7 @@ class mapScreen : AppCompatActivity(), OnMapReadyCallback {
         mapFragment.getMapAsync(this)
         gpsLatitude= getIntent().getDoubleExtra(GPS_LATITUDE, 0.0)
         gpsLongitude= getIntent().getDoubleExtra(GPS_LONGITUDE, 0.0)
+        locationTitle= getIntent().getStringExtra("title")
         Log.d("CodeAndroidLocation", "Opened Map View")
         Log.d("CodeAndroidLocation", "-Map Latitude : " + gpsLatitude)
         Log.d("CodeAndroidLocation", "-Map Longitude : " + gpsLongitude)
@@ -47,7 +49,7 @@ class mapScreen : AppCompatActivity(), OnMapReadyCallback {
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
         val currentLocation = LatLng(gpsLatitude,gpsLongitude)
-        mMap.addMarker(MarkerOptions().position(currentLocation).title("Your Location"))
+        mMap.addMarker(MarkerOptions().position(currentLocation).title(locationTitle))
         mMap.moveCamera(CameraUpdateFactory.newLatLng(currentLocation))
         mMap.animateCamera( CameraUpdateFactory.zoomTo( 16.0f ) );
     }

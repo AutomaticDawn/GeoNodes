@@ -10,29 +10,50 @@ import com.example.vladimir.geonodes.Utilities.*
 import com.example.vladimir.geonodes.Visual.*
 import com.google.gson.JsonObject
 import org.json.JSONObject
+import android.content.Intent
+import android.net.Uri
+import android.view.View
+
 
 class LocationInfoScreen : AppCompatActivity() {
 
-
+    var locList: locResponse? = null
+    var id: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         Log.d("JSON_Server", "LocationInfoScreen On Create")
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_location_info_screen)
         val temp = getIntent().getStringExtra("locList")
-        var id = getIntent().getIntExtra("id", 0)
-        val locList: locResponse = locResponse(temp)
-        loadLocation(locList,id)
+        id = getIntent().getIntExtra("id", 0)
+        locList= locResponse(temp)
+        loadLocation()
     }
 
-    fun loadLocation(locList: locResponse, i: Int)
+    fun loadLocation()
     {
         // DODATI STVARI IZ BAZE PODATAKA
-        Log.d("JSON_Server", "LocationInfoScreen loadLocation")
-        locationNameValue.text = locList.locations!![i].name
-        latitudeValue.text = locList.locations!![i].latitude.toString()
-        longitudeValue.text = locList.locations!![i].longitude.toString()
-
+        locationNameValue.text = locList!!.locations!![id].name
+        latitudeValue.text = locList!!.locations!![id].latitude.toString()
+        longitudeValue.text = locList!!.locations!![id].longitude.toString()
     }
 
+    fun redirectClick(view: View)
+    {
+        Log.d("JSON_Server", "Opening: " + locList!!.locations!![id].name)
+        val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(locList!!.locations!![id].url))
+        startActivity(browserIntent)
+    }
+
+    fun mapOpener(view: View) // Funkcija koja otvara mapu
+    {
+        Log.d("JSON_Server", "Opening map")
+        var mapIntent = Intent(this, mapScreen::class.java)
+        Log.d("JSON_Server", "Created Intent")
+        mapIntent.putExtra("latitude",locList!!.locations!![id].latitude)
+        mapIntent.putExtra("longitude",locList!!.locations!![id].longitude)
+        mapIntent.putExtra("title",locList!!.locations!![id].name)
+        Log.d("JSON_Server", "Put Extras")
+        startActivity(mapIntent)
+    }
 }

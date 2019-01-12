@@ -90,6 +90,7 @@ class EntryScreen : AppCompatActivity() {
         var mapIntent = Intent(this, mapScreen::class.java)
         mapIntent.putExtra(GPS_LATITUDE,locationMain!!.latitude)
         mapIntent.putExtra(GPS_LONGITUDE,locationMain!!.longitude)
+        mapIntent.putExtra("title","Your Location")
         startActivity(mapIntent)
     }
 
