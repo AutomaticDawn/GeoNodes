@@ -35,7 +35,7 @@ class MyIntentService : IntentService("MyIntentService") {
     var runBck: Boolean = true
     var HasDatabase = false
     var locList: locResponse? = null
-    var diff: Double = 0.001 // Razlika
+    var diff: Double = 0.0007 // Razlika
 
     lateinit var locationManager: LocationManager
     private var hasGPS = false
@@ -46,8 +46,8 @@ class MyIntentService : IntentService("MyIntentService") {
 
     override fun onHandleIntent(intent: Intent?) {
         //runBck = getIntent().getBooleanExtra("bckService", false)
+        runBck = true
         serverRequest()
-        location()
         Thread.sleep(1000)
         bckProcess()
     }
@@ -57,6 +57,7 @@ class MyIntentService : IntentService("MyIntentService") {
         Log.d("Bck_Service", "Background Process Started")
         if(HasDatabase) {
             while (runBck) {
+                location()
                 time++
                 Log.d("Bck_Service", "Background Service running for: " + time + "s")
                 if(time%5 == 0) compare()
@@ -64,6 +65,10 @@ class MyIntentService : IntentService("MyIntentService") {
                 if (time >= 3600){
                     break
                 }
+                /*if(time>=60)
+                {
+                    notifyUser(0)
+                }*/
             }
         }
     }
@@ -106,14 +111,14 @@ class MyIntentService : IntentService("MyIntentService") {
         if (hasGPS || hasNetwork) {
             if (hasGPS) //GPS -------------------------------------------------------------
             {
-                Log.d("Bck_Service", "GPS available")
+                //Log.d("Bck_Service", "GPS available but still not found")
                 locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 0f, object :
                     LocationListener {
                     override fun onLocationChanged(location: Location?) {
                         if (location != null) {
                             locationGps = location
                             locationMain = locationGps
-                            Log.d("Bck_Service", "Updated GPS Coordinates") //Default koordinate su GPS koordinate
+                            //Log.d("Bck_Service", "Found and updated GPS Coordinates") //Default koordinate su GPS koordinate
                             //writeCoordinates()
                         }
                     }
@@ -138,13 +143,13 @@ class MyIntentService : IntentService("MyIntentService") {
 
             if (hasNetwork) //Network -------------------------------------------------------
             {
-                Log.d("Bck_Service", "Network available")
+                //Log.d("Bck_Service", "Network available but still not found")
                 locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 5000, 0F, object :
                     LocationListener {
                     override fun onLocationChanged(location: Location?) {
                         if (location != null) {
                             locationNetwork = location
-                            Log.d("Bck_Service", "Updated Network Coordinates")
+                            //Log.d("Bck_Service", "Found and updated Network Coordinates")
                         }
                     }
 
@@ -171,12 +176,12 @@ class MyIntentService : IntentService("MyIntentService") {
                 if (locationGps == null && locationNetwork != null)
                 {
                     locationMain = locationNetwork
-                    Log.d("Bck_Service", "Main location is now Network location")
+                    //Log.d("Bck_Service", "Main location is now Network location")
                 }
                 else
                 {
                     locationMain = locationGps
-                    Log.d("Bck_Service", "Main location is now GPS location")
+                    //Log.d("Bck_Service", "Main location is now GPS location")
                 }
                 //writeCoordinates()
                 Log.d("Bck_Service", "Main Latitude : " + locationMain!!.latitude)
@@ -194,19 +199,29 @@ class MyIntentService : IntentService("MyIntentService") {
         var tempLatDiff: Double? = 0.0
         var tempLongDiff: Double? = 0.0
         var currDiff: Double? = 0.0
-        Log.d("Bck_Service", "Background Service is comparing with database")
-        for(i in 0..locList!!.count-1)
+        if(locationMain?.latitude != null && locationMain?.longitude != null)
         {
-            //Log.d("Bck_Service","Loop: " + i)
-            tempLatDiff = locList!!.locations!![i].latitude!! - locationMain!!.latitude!!
-            tempLongDiff = locList!!.locations!![i].longitude!! - locationMain!!.longitude!!
-            currDiff = sqrt((tempLatDiff*tempLatDiff)+(tempLongDiff*tempLongDiff))
-            //Log.d("Bck_Service","Difference " + i + ": " + currDiff)
-            if(currDiff<diff)
+            Log.d("Bck_Service", "Background Service is comparing with database")
+            for(i in 0..locList!!.count-1)
             {
-                Log.d("Bck_Service","Sending Notification with id: " + i)
-                notifyUser(i)
+
+                //Log.d("Bck_Service", "Loop: " + i)
+                tempLatDiff = locList!!.locations!![i].latitude!! - locationMain!!.latitude!!
+                tempLongDiff = locList!!.locations!![i].longitude!! - locationMain!!.longitude!!
+                currDiff = sqrt((tempLatDiff * tempLatDiff) + (tempLongDiff * tempLongDiff))
+                //Log.d("Bck_Service", "Difference " + i + ": " + currDiff)
+                if (currDiff < diff) {
+                    Log.d("Bck_Service", "Sending Notification with id: " + i + " <--")
+                    notifyUser(i)
+                    runBck = false
+                    break
+                }
             }
+        }
+        else
+        {
+            Toast.makeText(this, "No GPS Data", Toast.LENGTH_SHORT).show()
+            Log.d("Bck_Service", "Background Service has no GPS data")
         }
     }
 
@@ -217,19 +232,16 @@ class MyIntentService : IntentService("MyIntentService") {
 
         val pendingIntent: PendingIntent = PendingIntent.getActivity(this, 1, notIntent, 0)
 
-        val NOTIFICATION_GROUP = "com.android.example.GeoNodes"
-
         var notifikacija = NotificationCompat.Builder(this, "1") //Deklaracija notifikacije
             .setSmallIcon(R.drawable.notification_icon)
             .setContentTitle("You Are Near An Important Location")
             .setContentText(locList!!.locations!![id].name)
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
             .setContentIntent(pendingIntent)
-            .setGroup(NOTIFICATION_GROUP)
             .setAutoCancel(true)
 
         with(NotificationManagerCompat.from(this)) {
-            notify(id, notifikacija.build())
+            notify(1, notifikacija.build())
         }
     }
 }

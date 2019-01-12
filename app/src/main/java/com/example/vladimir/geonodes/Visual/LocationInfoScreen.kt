@@ -27,7 +27,7 @@ class LocationInfoScreen : AppCompatActivity() {
         id = getIntent().getIntExtra("id", 0)
         locList= locResponse(temp)
         loadLocation()
-        Log.d("Bck_Service","LocationInfoScreen Launched")
+        Log.d("Bck_Service","LocationInfoScreen Launched and Background Service stopped, id value: " + id + " <--")
     }
 
     fun loadLocation()
@@ -53,5 +53,12 @@ class LocationInfoScreen : AppCompatActivity() {
         mapIntent.putExtra("longitude",locList!!.locations!![id].longitude)
         mapIntent.putExtra("title",locList!!.locations!![id].name)
         startActivity(mapIntent)
+    }
+
+    fun startThread(view: View)
+    {
+        val bck_intent = Intent(this, MyIntentService::class.java)
+        Log.d("Bck_Service","Starting Background Service")
+        startService(bck_intent)
     }
 }

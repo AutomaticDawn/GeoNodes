@@ -40,16 +40,26 @@
             android:text="Click To Read More About This Location"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/redirect" android:layout_marginTop="83dp"
+            android:id="@+id/redirect" android:layout_marginTop="32dp"
             app:layout_constraintTop_toBottomOf="@+id/longitudeValue" app:layout_constraintStart_toStartOf="parent"
             android:layout_marginStart="12dp" app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginEnd="13dp" android:onClick="redirectClick"/>
+            android:layout_marginEnd="13dp" android:onClick="redirectClick"
+            app:layout_constraintHorizontal_bias="0.512"/>
     <Button
             android:text="Open The Map To Check Your Location"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/mapOpener" android:layout_marginTop="69dp"
+            android:id="@+id/mapOpener" android:layout_marginTop="32dp"
             app:layout_constraintTop_toBottomOf="@+id/redirect" app:layout_constraintStart_toStartOf="parent"
             android:layout_marginStart="39dp" app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginEnd="39dp" android:onClick="mapOpener"/>
+    <Button
+            android:text="Continue Exploring"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/continueButton" android:layout_marginTop="32dp"
+            app:layout_constraintTop_toBottomOf="@+id/mapOpener" app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginBottom="32dp" app:layout_constraintStart_toStartOf="parent"
+            android:onClick="startThread"/>
 </android.support.constraint.ConstraintLayout>
