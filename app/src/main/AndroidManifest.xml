@@ -15,8 +15,8 @@
             android:theme="@style/AppTheme">
         <activity android:name=".Visual.EntryScreen">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
 
+                <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
@@ -41,11 +41,7 @@
         <activity android:name=".Visual.LocationInfoScreen">
         </activity>
         <activity android:name=".Visual.MainActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
 
-                <category android:name="android.intent.category.LAUNCHER"/>
-            </intent-filter>
         </activity>
 
         <service

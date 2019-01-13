@@ -36,6 +36,7 @@ class MyIntentService : IntentService("MyIntentService") {
     var HasDatabase = false
     var locList: locResponse? = null
     var diff: Double = 0.0007 // Razlika
+    var bannedId: Int = -1
 
     lateinit var locationManager: LocationManager
     private var hasGPS = false
@@ -78,7 +79,7 @@ class MyIntentService : IntentService("MyIntentService") {
         val requestQueue: RequestQueue = Volley.newRequestQueue(this)
         val objRequest: JsonObjectRequest = JsonObjectRequest(
             Request.Method.GET,
-            "http://89.216.137.159:3000/locations",
+            "http://89.216.142.211:3000/locations",
             null,
             Response.Listener { response ->
                 locList = locResponse(response.toString())
@@ -210,10 +211,11 @@ class MyIntentService : IntentService("MyIntentService") {
                 tempLongDiff = locList!!.locations!![i].longitude!! - locationMain!!.longitude!!
                 currDiff = sqrt((tempLatDiff * tempLatDiff) + (tempLongDiff * tempLongDiff))
                 //Log.d("Bck_Service", "Difference " + i + ": " + currDiff)
-                if (currDiff < diff) {
+                if (currDiff < diff && bannedId != i) {
                     Log.d("Bck_Service", "Sending Notification with id: " + i + " <--")
                     notifyUser(i)
-                    runBck = false
+                    bannedId=i
+                    //runBck = false
                     break
                 }
             }
