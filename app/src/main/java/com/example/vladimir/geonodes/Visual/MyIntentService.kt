@@ -45,6 +45,10 @@ class MyIntentService : IntentService("MyIntentService") {
     private var locationNetwork: Location? = null
     private var locationMain: Location? = null
 
+    companion object {
+        var identification : Int = 1
+    }
+
     override fun onHandleIntent(intent: Intent?) {
         //runBck = getIntent().getBooleanExtra("bckService", false)
         runBck = true
@@ -79,7 +83,7 @@ class MyIntentService : IntentService("MyIntentService") {
         val requestQueue: RequestQueue = Volley.newRequestQueue(this)
         val objRequest: JsonObjectRequest = JsonObjectRequest(
             Request.Method.GET,
-            "http://89.216.142.211:3000/locations",
+            "http://89.216.129.66:3000/locations",
             null,
             Response.Listener { response ->
                 locList = locResponse(response.toString())
@@ -230,7 +234,8 @@ class MyIntentService : IntentService("MyIntentService") {
     fun notifyUser(id: Int) {
         val notIntent = Intent(this, LocationInfoScreen::class.java) // Pravljenje intent-a za notifikaciju
         notIntent.putExtra("locList", locList.toString())
-        notIntent.putExtra("id", id)
+        MyIntentService.Companion.identification = id
+        //notIntent.putExtra("id", id)
 
         val pendingIntent: PendingIntent = PendingIntent.getActivity(this, 1, notIntent, 0)
 

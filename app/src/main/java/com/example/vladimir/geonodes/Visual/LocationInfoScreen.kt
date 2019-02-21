@@ -24,7 +24,8 @@ class LocationInfoScreen : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_location_info_screen)
         val temp = getIntent().getStringExtra("locList")
-        id = getIntent().getIntExtra("id", 0)
+        //id = getIntent().getIntExtra("id", 0)
+        id = MyIntentService.Companion.identification
         locList= locResponse(temp)
         loadLocation()
         Log.d("Bck_Service","LocationInfoScreen Launched and Background Service stopped, id value: " + id + " <--")
