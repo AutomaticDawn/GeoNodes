@@ -83,7 +83,7 @@ class MyIntentService : IntentService("MyIntentService") {
         val requestQueue: RequestQueue = Volley.newRequestQueue(this)
         val objRequest: JsonObjectRequest = JsonObjectRequest(
             Request.Method.GET,
-            "http://89.216.129.66:3000/locations",
+            "https://geonodes.herokuapp.com/locations",
             null,
             Response.Listener { response ->
                 locList = locResponse(response.toString())
