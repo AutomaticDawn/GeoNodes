@@ -11,6 +11,7 @@ import com.example.vladimir.geonodes.Visual.*
 import com.google.gson.JsonObject
 import org.json.JSONObject
 import android.content.Intent
+import android.content.pm.ActivityInfo
 import android.net.Uri
 import android.view.View
 
@@ -28,7 +29,8 @@ class LocationInfoScreen : AppCompatActivity() {
         id = MyIntentService.Companion.identification
         locList= locResponse(temp)
         loadLocation()
-        Log.d("Bck_Service","LocationInfoScreen Launched and Background Service stopped, id value: " + id + " <--")
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_NOSENSOR)
+        Log.d("Bck_Service","LocationInfoScreen Launched, id value: " + id + " <--")
     }
 
     fun loadLocation()
@@ -58,8 +60,9 @@ class LocationInfoScreen : AppCompatActivity() {
 
     fun startThread(view: View)
     {
-        val bck_intent = Intent(this, MyIntentService::class.java)
+        /*val bck_intent = Intent(this, MyIntentService::class.java)
         Log.d("Bck_Service","Starting Background Service")
-        startService(bck_intent)
+        startService(bck_intent)*/
+        this.finish()
     }
 }
